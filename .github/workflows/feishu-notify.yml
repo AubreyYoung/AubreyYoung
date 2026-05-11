@@ -1,0 +1,41 @@
+name: Feishu Notifications
+
+on:
+  push:
+  pull_request:
+  issues:
+  issue_comment:
+  pull_request_review:
+  pull_request_review_comment:
+  create:
+  delete:
+  release:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Feishu notification
+        env:
+          FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+        run: |
+          if [ -n "$FEISHU_WEBHOOK" ]; then
+            PAYLOAD=$(cat << 'EOF'
+            {
+              "msg_type": "interactive",
+              "card": {
+                "config": {"wide_screen_mode": true},
+                "header": {
+                  "title": {"tag": "plain_text", "content": "🔔 GitHub - ${{ github.event_name }}"},
+                  "style": {"background_color": "#1a1a1a"}
+                },
+                "elements": [
+                  {"tag": "markdown", "content": "**${{ github.repository }}**\n\n**Event:** ${{ github.event_name }}\n\n**Actor:** ${{ github.actor }}\n\n**Ref:** `${{ github.ref }}`"},
+                  {"tag": "hr"},
+                  {"tag": "note", "elements": [{"tag": "plain_text", "content": "🌐 ${{ github.server_url }}/${{ github.repository }}/actions"}]}
+                ]
+              }
+            }
+            EOF)
+            curl -s -X POST "$FEISHU_WEBHOOK" -H "Content-Type: application/json" -d "$PAYLOAD"
+          fi
