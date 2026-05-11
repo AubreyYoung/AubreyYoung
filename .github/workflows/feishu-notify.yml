@@ -19,7 +19,6 @@ jobs:
         env:
           FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
         run: |
-          echo "FEISHU_WEBHOOK is set: $(test -n '$FEISHU_WEBHOOK' && echo yes || echo no)"
           curl -s -X POST "$FEISHU_WEBHOOK" \
             -H "Content-Type: application/json" \
             -d '{
