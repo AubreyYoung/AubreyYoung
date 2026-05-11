@@ -10,7 +10,6 @@ on:
   create:
   delete:
   release:
-  workflow_dispatch:
 
 jobs:
   notify:
@@ -31,13 +30,7 @@ jobs:
                   "style": {"background_color": "#1a1a1a"}
                 },
                 "elements": [
-                  {"tag": "markdown", "content": "**${{ github.repository }}**
-
-**Event:** ${{ github.event_name }}
-
-**Actor:** ${{ github.actor }}
-
-**Ref:** `${{ github.ref }}`"},
+                  {"tag": "markdown", "content": "**${{ github.repository }}**\n\n**Event:** ${{ github.event_name }}\n\n**Actor:** ${{ github.actor }}\n\n**Ref:** `${{ github.ref }}`"},
                   {"tag": "hr"},
                   {"tag": "note", "elements": [{"tag": "plain_text", "content": "🌐 ${{ github.server_url }}/${{ github.repository }}/actions"}]}
                 ]
