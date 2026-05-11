@@ -19,9 +19,10 @@ jobs:
         env:
           FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
         run: |
-          if [ -n "$FEISHU_WEBHOOK" ]; then
-            PAYLOAD=$(cat << 'EOF'
-            {
+          echo "FEISHU_WEBHOOK is set: $(test -n '$FEISHU_WEBHOOK' && echo yes || echo no)"
+          curl -s -X POST "$FEISHU_WEBHOOK" \
+            -H "Content-Type: application/json" \
+            -d '{
               "msg_type": "interactive",
               "card": {
                 "config": {"wide_screen_mode": true},
@@ -35,7 +36,4 @@ jobs:
                   {"tag": "note", "elements": [{"tag": "plain_text", "content": "🌐 ${{ github.server_url }}/${{ github.repository }}/actions"}]}
                 ]
               }
-            }
-            EOF)
-            curl -s -X POST "$FEISHU_WEBHOOK" -H "Content-Type: application/json" -d "$PAYLOAD"
-          fi
+            }'
